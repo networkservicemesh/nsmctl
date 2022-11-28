@@ -33,6 +33,7 @@ func New() *cobra.Command {
 		Long: `Network Service Mesh Command Line Tool
 	`,
 		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Add flag --help to get commands")
 			fmt.Println("See more information about NSM https://networkservicemesh.io/docs/concepts/enterprise_users/")
 		},
 	}
