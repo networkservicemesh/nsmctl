@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package nsmctl contains root command of nsmctl
 package nsmctl
 
 import (
@@ -23,6 +24,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// New creates new cmd/nsmctl
 func New() *cobra.Command {
 	nsmctlCmd := &cobra.Command{
 		Use:               "nsmctl",

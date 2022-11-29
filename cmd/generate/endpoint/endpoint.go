@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package endpoint contains a command for generating nsm endpoints
 package endpoint
 
 import (
@@ -30,6 +31,7 @@ var mainFileTemplate string
 //go:embed deployment.yaml.tmpl
 var deploymentFileTemplate string
 
+// New creates a new cobra.Command instance for cmd/gen/nse.
 func New(proj *project.Project) *cobra.Command {
 	var result = &cobra.Command{
 		Use:               "endpoint",

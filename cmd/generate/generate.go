@@ -14,12 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package generate contains cobra implementation for cmd/gen
 package generate
 
 import (
 	_ "embed"
-	"errors"
-	"fmt"
+
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,6 +27,7 @@ import (
 	"github.com/edwarnicke/exechelper"
 	"github.com/networkservicemesh/nsmctl/cmd/generate/endpoint"
 	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -36,8 +37,9 @@ var dockerFileTemplate string
 //go:embed imports.go.tmpl
 var importsFileTemplate string
 
-var errSpecifyTheTarget = errors.New("please specify the target [endpoint, nsmgr, nsmgr-proxy, forwarder]")
+var errSpecifyTheTarget = errors.New("specify the target [endpoint, nsmgr, nsmgr-proxy, forwarder]")
 
+// New creates new cmd/gen instance
 func New() *cobra.Command {
 	var result *cobra.Command
 	var proj = new(project.Project)
@@ -80,12 +82,12 @@ func New() *cobra.Command {
 			}
 
 			if err := exechelper.Run("docker -v", exechelper.WithStdout(os.Stdout)); err != nil {
-				return fmt.Errorf("docker is required: %v", err.Error())
+				return errors.Wrap(err, "docker is required")
 			}
 			var goVersionStream strings.Builder
 
 			if err := exechelper.Run("go version", exechelper.WithStdout(&goVersionStream)); err != nil {
-				return fmt.Errorf("go is required: %v", err.Error())
+				return errors.Wrap(err, "go is required")
 			}
 
 			_, _ = os.Stdout.WriteString(goVersionStream.String())
@@ -96,21 +98,20 @@ func New() *cobra.Command {
 			proj.Go, _ = cmd.Flags().GetString("go")
 
 			if !strings.Contains(goVersionStream.String(), proj.Go) {
-				return fmt.Errorf("please install go v%v or use flag --go to change the version" + proj.Go)
+				return errors.New("missed go with version " + proj.Go)
 			}
 
-			proj.Files = append(proj.Files, &project.File{
-				Path:     "Dockerfile",
-				Template: dockerFileTemplate,
-			})
-
-			proj.Files = append(proj.Files, &project.File{
-				Path:     filepath.Join("internal", "pkg", "imports", "imports.go"),
-				Template: importsFileTemplate,
-			})
-
+			proj.Files = append(proj.Files,
+				&project.File{
+					Path:     "Dockerfile",
+					Template: dockerFileTemplate,
+				},
+				&project.File{
+					Path:     filepath.Join("internal", "pkg", "imports", "imports.go"),
+					Template: importsFileTemplate,
+				},
+			)
 			return nil
-
 		},
 	}
 

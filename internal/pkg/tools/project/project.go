@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package project contains data structures and functions for cmd/gen
 package project
 
 import (
@@ -25,17 +26,20 @@ import (
 	"strings"
 )
 
+// File represents file of the project that will be generated
 type File struct {
 	Template   string
 	Path       string
 	Parameters any
 }
 
+// Project represents a set of Files
 type Project struct {
 	Name, Path, Go, Spire string
 	Files                 []*File
 }
 
+// Save saves project on the filesystem
 func (p *Project) Save() error {
 	_ = os.MkdirAll(p.Path, os.ModePerm)
 
