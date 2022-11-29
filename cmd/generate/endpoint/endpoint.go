@@ -20,9 +20,10 @@ package endpoint
 import (
 	_ "embed"
 
+	"github.com/spf13/cobra"
+
 	"github.com/networkservicemesh/nsmctl/cmd/generate/endpoint/vpp"
 	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
-	"github.com/spf13/cobra"
 )
 
 //go:embed main.go.tmpl

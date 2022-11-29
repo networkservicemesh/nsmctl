@@ -20,8 +20,9 @@ package vpp
 import (
 	_ "embed"
 
-	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
 	"github.com/spf13/cobra"
+
+	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
 )
 
 //go:embed main.go.tmpl

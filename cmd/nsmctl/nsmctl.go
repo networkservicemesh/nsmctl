@@ -20,8 +20,9 @@ package nsmctl
 import (
 	"fmt"
 
-	"github.com/networkservicemesh/nsmctl/cmd/generate"
 	"github.com/spf13/cobra"
+
+	"github.com/networkservicemesh/nsmctl/cmd/generate"
 )
 
 // New creates new cmd/nsmctl

@@ -25,10 +25,11 @@ import (
 	"strings"
 
 	"github.com/edwarnicke/exechelper"
-	"github.com/networkservicemesh/nsmctl/cmd/generate/endpoint"
-	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+
+	"github.com/networkservicemesh/nsmctl/cmd/generate/endpoint"
+	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/project"
 )
 
 //go:embed dockerfile.tmpl
