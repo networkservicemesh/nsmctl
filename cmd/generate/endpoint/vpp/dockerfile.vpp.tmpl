@@ -2,11 +2,10 @@
 ARG VPP_VERSION={{ .VPP }}
 FROM ghcr.io/edwarnicke/govpp/vpp:${VPP_VERSION} as go
 COPY --from=golang:{{ .Go }}-buster /usr/local/go/ /go
-
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 ENV GOBIN=/bin
-RUN go install github.com/go-delve/delve/cmd/dlv
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.8.2
 ADD https://github.com/spiffe/spire/releases/download/v{{ .Spire }}/spire-{{ .Spire }}-linux-x86_64-glibc.tar.gz .
 RUN tar xzvf spire-{{ .Spire }}-linux-x86_64-glibc.tar.gz -C /bin --strip=2 spire-{{ .Spire }}/bin/spire-server spire-{{ .Spire }}/bin/spire-agent
 

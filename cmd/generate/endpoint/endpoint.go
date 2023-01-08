@@ -70,9 +70,9 @@ func New(proj *project.Project) *cobra.Command {
 		},
 	}
 
-	addFlags(result)
-
 	result.AddCommand(vpp.New(proj))
+
+	addFlags(result)
 
 	return result
 }

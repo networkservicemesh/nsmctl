@@ -38,7 +38,7 @@ var dockerFileTemplate string
 //go:embed imports.go.tmpl
 var importsFileTemplate string
 
-var errSpecifyTheTarget = errors.New("specify the target [endpoint, nsmgr, nsmgr-proxy, forwarder]")
+var errSpecifyTheTarget = errors.New("specify the target [nse, nse vpp]")
 
 // New creates new cmd/gen instance
 func New() *cobra.Command {
@@ -50,6 +50,7 @@ func New() *cobra.Command {
 		Short:             "gen",
 		Aliases:           []string{"gen"},
 		DisableAutoGenTag: true,
+		TraverseChildren:  true,
 		Long:              `generates something`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return errSpecifyTheTarget
@@ -59,7 +60,6 @@ func New() *cobra.Command {
 			var err error
 
 			opts = append(opts, exechelper.WithStdout(cmd.OutOrStdout()), exechelper.WithStderr(cmd.ErrOrStderr()))
-
 			if proj.Path != "" {
 				opts = append(opts, exechelper.WithDir(proj.Path))
 			}
@@ -72,16 +72,9 @@ func New() *cobra.Command {
 			if err = exechelper.Run("go mod tidy", opts...); err != nil {
 				return err
 			}
-			if err = exechelper.Run("docker build . -t "+proj.Name, opts...); err != nil {
-				return err
-			}
 			return nil
 		},
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			if cmd.Parent().Name() != result.Name() {
-				return errSpecifyTheTarget
-			}
-
 			if err := exechelper.Run("docker -v", exechelper.WithStdout(os.Stdout)); err != nil {
 				return errors.Wrap(err, "docker is required")
 			}
@@ -119,6 +112,7 @@ func New() *cobra.Command {
 	result.AddCommand(endpoint.New(proj))
 
 	addFlags(result)
+	inheritPersistentBehaviour(result, result.Parent())
 
 	return result
 }
@@ -132,4 +126,35 @@ func addFlags(cmd *cobra.Command) {
 	for _, child := range cmd.Commands() {
 		addFlags(child)
 	}
+}
+
+func inheritPersistentBehaviour(cmd, parent *cobra.Command) {
+	for _, child := range cmd.Commands() {
+		if parent != nil {
+
+			if parent.PersistentPreRunE != nil && cmd.PersistentPreRunE != nil {
+				var persistentPreRunE = cmd.PersistentPreRunE
+				cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+					if err := parent.PersistentPreRunE(cmd, args); err != nil {
+						return nil
+					}
+					return persistentPreRunE(cmd, args)
+				}
+			}
+
+			if parent.PersistentPostRunE != nil && cmd.PersistentPostRunE != nil {
+				var persistentPostRunE = cmd.PersistentPostRunE
+				cmd.PersistentPostRunE = func(cmd *cobra.Command, args []string) error {
+					if err := parent.PersistentPostRunE(cmd, args); err != nil {
+						return nil
+					}
+					return persistentPostRunE(cmd, args)
+				}
+			}
+
+		}
+
+		inheritPersistentBehaviour(child, cmd)
+	}
+
 }

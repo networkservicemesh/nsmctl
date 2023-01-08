@@ -23,6 +23,7 @@ import (
 	"github.com/networkservicemesh/api/pkg/api/networkservice"
 	registryapi "github.com/networkservicemesh/api/pkg/api/registry"
 	"github.com/networkservicemesh/sdk-vpp/pkg/networkservice/connectioncontext"
+	"github.com/networkservicemesh/sdk/pkg/networkservice/ipam/point2pointipam"
 	"github.com/networkservicemesh/sdk-vpp/pkg/networkservice/mechanisms/memif"
 	"github.com/networkservicemesh/sdk-vpp/pkg/networkservice/tag"
 	"github.com/networkservicemesh/sdk-vpp/pkg/networkservice/up"
@@ -49,6 +50,10 @@ func main() {
 	const name = "{{ .Name }}"
 	var services = []string{ {{ range $index, $service := .Services }}  "{{ $service }}", {{ end }} }
 	var labels = make(map[string]string)
+
+	{{ range $key, $value := .Labels }}
+	labels["{{ $key }}"]="{{ $value }}"
+	{{ end }}
 
 	// ********************************************************************************
 	// setup context to catch signals
@@ -129,8 +134,6 @@ func main() {
 	log.FromContext(ctx).Infof("executing phase 3: creating icmp server ipam")
 	// ********************************************************************************
 
-	ipamChain := getIPAMChain(config.CidrPrefix)
-
 	log.FromContext(ctx).Infof("network prefixes parsed successfully")
 
 	// ********************************************************************************
@@ -144,7 +147,7 @@ func main() {
 		endpoint.WithName(name),
 		endpoint.WithAuthorizeServer(authorize.NewServer()),
 		endpoint.WithAdditionalFunctionality(
-			ipamChain,
+			point2pointipam.NewServer(),
 			mechanisms.NewServer(map[string]networkservice.NetworkServiceServer{
 				memif.MECHANISM: chain.NewNetworkServiceServer(
 					sendfd.NewServer(),
