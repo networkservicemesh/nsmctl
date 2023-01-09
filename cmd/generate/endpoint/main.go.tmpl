@@ -59,6 +59,10 @@ func main() {
     var services = []string{ {{ range $index, $service := .Services }}  "{{ $service }}", {{ end }} }
     var labels = make(map[string]string)
 
+	{{ range $key, $value := .Labels }}
+	labels["{{ $key }}"]="{{ $value }}"
+	{{ end }}
+
 	// ********************************************************************************
 	// setup logging
 	// ********************************************************************************

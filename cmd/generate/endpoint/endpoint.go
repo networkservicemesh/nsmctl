@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Cisco and/or its affiliates.
+// Copyright (c) 2022-2023 Cisco and/or its affiliates.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -70,9 +70,9 @@ func New(proj *project.Project) *cobra.Command {
 		},
 	}
 
-	addFlags(result)
-
 	result.AddCommand(vpp.New(proj))
+
+	addFlags(result)
 
 	return result
 }
