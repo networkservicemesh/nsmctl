@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Cisco and/or its affiliates.
+// Copyright (c) 2022-2023 Cisco and/or its affiliates.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -131,7 +131,6 @@ func addFlags(cmd *cobra.Command) {
 func inheritPersistentBehaviour(cmd, parent *cobra.Command) {
 	for _, child := range cmd.Commands() {
 		if parent != nil {
-
 			if parent.PersistentPreRunE != nil && cmd.PersistentPreRunE != nil {
 				var persistentPreRunE = cmd.PersistentPreRunE
 				cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
@@ -151,10 +150,8 @@ func inheritPersistentBehaviour(cmd, parent *cobra.Command) {
 					return persistentPostRunE(cmd, args)
 				}
 			}
-
 		}
 
 		inheritPersistentBehaviour(child, cmd)
 	}
-
 }

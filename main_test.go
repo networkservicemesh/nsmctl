@@ -14,6 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build linux
+// +build linux
+
 package main_test
 
 import (
@@ -28,19 +31,19 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-type SystemTestsSuite struct {
+type MainSuite struct {
 	suite.Suite
 	ctx context.Context
 }
 
-func (s *SystemTestsSuite) RequireExec(cmd string, opts ...*exechelper.Option) {
+func (s *MainSuite) RequireExec(cmd string, opts ...*exechelper.Option) {
 	var initOpts = []*exechelper.Option{exechelper.WithStderr(os.Stderr), exechelper.WithContext(s.ctx), exechelper.WithStdout(os.Stdout)}
 	initOpts = append(initOpts, opts...)
 	var execErr = exechelper.Run(cmd, initOpts...)
 	s.NoError(execErr)
 }
 
-func (s *SystemTestsSuite) SetupSuite() {
+func (s *MainSuite) SetupSuite() {
 	var cancel func()
 	s.ctx, cancel = context.WithTimeout(context.Background(), time.Minute*10)
 	s.T().Cleanup(func() { cancel() })
@@ -48,11 +51,11 @@ func (s *SystemTestsSuite) SetupSuite() {
 	s.RequireExec("go install")
 }
 
-func (s *SystemTestsSuite) TestHelp() {
+func (s *MainSuite) TestHelp() {
 	s.RequireExec("nsmctl --help")
 }
 
-func (s *SystemTestsSuite) Test_Generate_NetworkServiceEndpoint() {
+func (s *MainSuite) Test_Generate_NetworkServiceEndpoint() {
 	var dir = filepath.Join(os.Getenv("GOPATH"), "src", "my_nse_folder")
 
 	defer func() {
@@ -65,13 +68,12 @@ func (s *SystemTestsSuite) Test_Generate_NetworkServiceEndpoint() {
 
 	s.Require().NoError(err)
 
-	s.Require().Len(files, 3)
+	s.Require().Len(files, 6)
 
 	s.RequireExec("go build ./...", exechelper.WithDir(dir))
-
 }
 
-func (s *SystemTestsSuite) Test_Generate_NetworkServiceEndpointVpp() {
+func (s *MainSuite) Test_Generate_NetworkServiceEndpointVpp() {
 	var dir = filepath.Join(os.Getenv("GOPATH"), "src", "my_nse_vpp_folder")
 
 	defer func() {
@@ -84,12 +86,11 @@ func (s *SystemTestsSuite) Test_Generate_NetworkServiceEndpointVpp() {
 
 	s.Require().NoError(err)
 
-	s.Require().Len(files, 4)
+	s.Require().Len(files, 6)
 
 	s.RequireExec("go build ./...", exechelper.WithDir(dir))
-
 }
 
 func Test_RunSystemTests(t *testing.T) {
-	suite.Run(t, new(SystemTestsSuite))
+	suite.Run(t, new(MainSuite))
 }
