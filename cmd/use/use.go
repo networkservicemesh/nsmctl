@@ -31,11 +31,9 @@ import (
 func New() *cobra.Command {
 	return &cobra.Command{
 		Use:               "use",
-		Short:             "TODO",
+		Short:             "sets NSM domain that will be used by default",
 		SilenceUsage:      true,
 		DisableAutoGenTag: true,
-		Long: `TODO
-	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 2 {
 				return errors.New("wrong parameters len")

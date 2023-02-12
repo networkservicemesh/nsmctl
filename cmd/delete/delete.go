@@ -30,10 +30,12 @@ import (
 func New(storages map[string]*storage.Storage) *cobra.Command {
 	return &cobra.Command{
 		Use:               "delete",
-		Short:             "TODO",
+		Short:             "Deletes a NSM resource",
 		SilenceUsage:      true,
 		DisableAutoGenTag: true,
-		Long: `TODO
+		Long: `Deletes nsm resouces that may delete the user. 
+Delete can not delete resouces created by the another user beasd on the default OPA NSM policies.
+Expects type of the resource that need to delete and list of names. 
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) < 2 {

@@ -118,11 +118,12 @@ func (d *yamlPrinter) Print(itens []any) {
 func New(storages map[string]*storage.Storage) *cobra.Command {
 	var r = &cobra.Command{
 		Use:               "get",
-		Short:             "TODO",
+		Short:             "Get NSM resource/resouces",
 		Aliases:           []string{"describe"},
 		SilenceUsage:      true,
 		DisableAutoGenTag: true,
-		Long: `TODO
+		Long: `Gets NSM resources from the current NSM Domain. 
+If no name passed gets list of the resources instead.
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var printerType, goTemplate string

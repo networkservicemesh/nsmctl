@@ -34,10 +34,11 @@ func New(storages map[string]*storage.Storage) *cobra.Command {
 	var r = &cobra.Command{
 		Use:               "create",
 		Aliases:           []string{"apply"},
-		Short:             "TODO",
+		Short:             "Creates a new resource",
 		SilenceUsage:      true,
 		DisableAutoGenTag: true,
-		Long: `TODO
+		Long: `creates a new resource based on the passed type and file. 
+Can create an emptry resouces if passed two arguments (type and name).
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var (
