@@ -21,7 +21,6 @@ package main_test
 
 import (
 	"context"
-	"io/ioutil"
 	"net"
 	"os"
 	"path/filepath"
@@ -73,7 +72,7 @@ func (s *MainSuite) Test_Generate_NetworkServiceEndpoint() {
 
 	s.RequireExec("nsmctl gen nse --name nse-1 --labels app=my-nse,version=v1.0.0 --path " + dir)
 
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 
 	s.Require().NoError(err)
 
@@ -91,7 +90,7 @@ func (s *MainSuite) Test_Generate_NetworkServiceEndpointVpp() {
 
 	s.RequireExec("nsmctl gen nse vpp --name nse-1 --labels app=my-nse,version=v1.0.0 --path " + dir)
 
-	files, err := ioutil.ReadDir(dir)
+	files, err := os.ReadDir(dir)
 
 	s.Require().NoError(err)
 

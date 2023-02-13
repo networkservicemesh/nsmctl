@@ -19,7 +19,6 @@ package persistence
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -103,7 +102,7 @@ func Storage[T storage.Resource]() *storage.Storage {
 			return Store(s, r.(T))
 		},
 		List: func(ctx context.Context) ([]storage.Resource, error) {
-			var files, err = ioutil.ReadDir(PathOf[T](""))
+			var files, err = os.ReadDir(PathOf[T](""))
 			if err != nil {
 				return nil, err
 			}

@@ -20,7 +20,7 @@ package create
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"reflect"
 
 	"github.com/spf13/cobra"
@@ -67,7 +67,7 @@ Can create an emptry resouces if passed two arguments (type and name).
 				if filePath != "" {
 					var b []byte
 					// #nosec
-					b, err = ioutil.ReadFile(filePath)
+					b, err = os.ReadFile(filePath)
 					if err != nil {
 						return err
 					}

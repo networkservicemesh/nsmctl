@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Cisco and/or its affiliates.
+// Copyright (c) 2022-2023 Cisco and/or its affiliates.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -20,7 +20,6 @@ package project
 import (
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -68,7 +67,7 @@ func (p *Project) Save() error {
 
 		var content = strings.ReplaceAll(sb.String(), "&lt;", "<")
 
-		_ = ioutil.WriteFile(filePath, []byte(content), os.ModePerm)
+		_ = os.WriteFile(filePath, []byte(content), os.ModePerm)
 
 		fmt.Printf("✅ %v -- CREATED\n", filePath)
 	}
