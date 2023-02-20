@@ -28,7 +28,6 @@ import (
 	"text/template"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 
 	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/storage"
 )
@@ -102,53 +101,27 @@ func isComplex(k reflect.Kind) bool {
 	}
 }
 
-type yamlPrinter struct {
-	out io.Writer
-}
-
-func (d *yamlPrinter) Print(itens []any) {
-	for _, item := range itens {
-		var b, _ = yaml.Marshal(item)
-		_, _ = d.out.Write(b)
-		_, _ = d.out.Write([]byte("\n"))
-	}
-}
-
 // New creates a new instance of cobra.Command that allows to get/describe resources.
 func New(storages map[string]*storage.Storage) *cobra.Command {
 	var r = &cobra.Command{
 		Use:               "get",
 		Short:             "Get NSM resource/resouces",
-		Aliases:           []string{"describe"},
 		SilenceUsage:      true,
 		DisableAutoGenTag: true,
 		Long: `Gets NSM resources from the current NSM Domain. 
 If no name passed gets list of the resources instead.
 	`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var printerType, goTemplate string
+			var goTemplate string
 			var err error
 			var templ *template.Template
-
-			printerType, err = cmd.Flags().GetString("out")
-			if err != nil {
-				return err
-			}
 
 			goTemplate, err = cmd.Flags().GetString("go-template")
 			if err != nil {
 				return err
 			}
 
-			var p Printer
-			switch printerType {
-			case "default":
-				p = &tabPrinter{out: cmd.OutOrStdout()}
-			case "yaml":
-				p = &yamlPrinter{out: cmd.OutOrStdout()}
-			default:
-				return errors.New("unknown out type")
-			}
+			var p Printer = &tabPrinter{out: cmd.OutOrStdout()}
 
 			var items []interface{}
 
@@ -200,7 +173,6 @@ If no name passed gets list of the resources instead.
 			return nil
 		},
 	}
-	r.Flags().StringP("out", "o", "default", "represents format of out")
 	r.Flags().StringP("go-template", "", "", "epects 'go-tempalte' ")
 	return r
 }

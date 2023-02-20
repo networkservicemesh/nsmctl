@@ -148,10 +148,10 @@ func (s *MainSuite) Test_SandboxAndNSMControl() {
 	s.RequireExec("nsmctl get netsvc --domain test")
 	s.RequireExec("nsmctl get connections --domain test")
 
-	s.RequireExec("nsmctl describe -o yaml domains")
-	s.RequireExec("nsmctl describe -o yaml nses --domain test")
-	s.RequireExec("nsmctl describe -o yaml netsvc --domain test")
-	s.RequireExec("nsmctl describe -o yaml connections --domain test")
+	s.RequireExec("nsmctl describe domains")
+	s.RequireExec("nsmctl describe nses --domain test")
+	s.RequireExec("nsmctl describe netsvc --domain test")
+	s.RequireExec("nsmctl describe connections --domain test")
 
 	var p = filepath.Join(s.T().TempDir(), "mse.yaml")
 	_ = os.WriteFile(p, []byte("name: my-nse"), os.ModePerm)

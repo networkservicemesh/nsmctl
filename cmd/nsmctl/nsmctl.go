@@ -24,6 +24,7 @@ import (
 
 	"github.com/networkservicemesh/nsmctl/cmd/create"
 	"github.com/networkservicemesh/nsmctl/cmd/delete"
+	"github.com/networkservicemesh/nsmctl/cmd/describe"
 	"github.com/networkservicemesh/nsmctl/cmd/generate"
 	"github.com/networkservicemesh/nsmctl/cmd/get"
 	"github.com/networkservicemesh/nsmctl/cmd/use"
@@ -68,6 +69,7 @@ func New() *cobra.Command {
 	nsmctlCmd.AddCommand(get.New(storages))
 	nsmctlCmd.AddCommand(create.New(storages))
 	nsmctlCmd.AddCommand(delete.New(storages))
+	nsmctlCmd.AddCommand(describe.New(storages))
 	nsmctlCmd.AddCommand(use.New())
 	nsmctlCmd.AddCommand(generate.New())
 
