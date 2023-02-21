@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Cisco and/or its affiliates.
+// Copyright (c) 2022-2023 Cisco and/or its affiliates.
 //
 // SPDX-License-Identifier: Apache-2.0
 //
@@ -22,7 +22,14 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/networkservicemesh/nsmctl/cmd/create"
+	"github.com/networkservicemesh/nsmctl/cmd/delete"
+	"github.com/networkservicemesh/nsmctl/cmd/describe"
 	"github.com/networkservicemesh/nsmctl/cmd/generate"
+	"github.com/networkservicemesh/nsmctl/cmd/get"
+	"github.com/networkservicemesh/nsmctl/cmd/use"
+	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/domain"
+	"github.com/networkservicemesh/nsmctl/internal/pkg/tools/persistence"
 )
 
 // New creates new cmd/nsmctl
@@ -39,8 +46,42 @@ func New() *cobra.Command {
 			fmt.Println("Add flag --help to get commands")
 			fmt.Println("See more information about NSM https://networkservicemesh.io/docs/concepts/enterprise_users/")
 		},
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			var domainName, err = cmd.Flags().GetString("domain")
+			if err != nil {
+				return err
+			}
+
+			if domainName != "" {
+				v, vErr := persistence.Load[*domain.Domain](domainName)
+				if vErr != nil {
+					return vErr
+				}
+				domain.SetCurrent(v)
+			}
+
+			return nil
+		},
 	}
 
+	var storages = defaultResources()
+
+	nsmctlCmd.AddCommand(get.New(storages))
+	nsmctlCmd.AddCommand(create.New(storages))
+	nsmctlCmd.AddCommand(delete.New(storages))
+	nsmctlCmd.AddCommand(describe.New(storages))
+	nsmctlCmd.AddCommand(use.New())
 	nsmctlCmd.AddCommand(generate.New())
+
+	addCommonFlags(nsmctlCmd)
+
 	return nsmctlCmd
+}
+
+func addCommonFlags(cmd *cobra.Command) {
+	cmd.Flags().StringP("domain", "d", "", "nsm domain that should be used for control")
+
+	for _, child := range cmd.Commands() {
+		addCommonFlags(child)
+	}
 }
