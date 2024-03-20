@@ -120,8 +120,8 @@ func New() *cobra.Command {
 func addFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP("path", "p", "", "path to the project")
 	cmd.Flags().StringP("name", "n", "app", "name of the generating app")
-	cmd.Flags().StringP("spire", "s", "1.2.2", "version of spire")
-	cmd.Flags().StringP("go", "g", "1.19", "version of go")
+	cmd.Flags().StringP("spire", "s", "1.9.1", "version of spire")
+	cmd.Flags().StringP("go", "g", "1.20", "version of go")
 
 	for _, child := range cmd.Commands() {
 		addFlags(child)

@@ -1,6 +1,6 @@
 module github.com/networkservicemesh/nsmctl
 
-go 1.19
+go 1.20
 
 require (
 	github.com/edwarnicke/exechelper v1.0.3
