@@ -69,6 +69,7 @@ func New() *cobra.Command {
 			}
 
 			_ = exechelper.Run("go mod init", opts...)
+			_ = exechelper.Run("go get cloud.google.com/go/compute/metadata", opts...)
 			if err = exechelper.Run("go mod tidy", opts...); err != nil {
 				return err
 			}
@@ -120,8 +121,8 @@ func New() *cobra.Command {
 func addFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP("path", "p", "", "path to the project")
 	cmd.Flags().StringP("name", "n", "app", "name of the generating app")
-	cmd.Flags().StringP("spire", "s", "1.9.1", "version of spire")
-	cmd.Flags().StringP("go", "g", "1.21", "version of go")
+	cmd.Flags().StringP("spire", "s", "1.8.7", "version of spire")
+	cmd.Flags().StringP("go", "g", "1.20.11", "version of go")
 
 	for _, child := range cmd.Commands() {
 		addFlags(child)
