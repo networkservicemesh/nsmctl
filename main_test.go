@@ -21,6 +21,7 @@ package main_test
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -73,6 +74,10 @@ func (s *MainSuite) Test_Generate_NetworkServiceEndpoint() {
 	s.RequireExec("nsmctl gen nse --name nse-1 --labels app=my-nse,version=v1.0.0 --path " + dir)
 
 	files, err := os.ReadDir(dir)
+
+	for _, file := range files {
+		fmt.Println(file.Info())
+	}
 
 	s.Require().NoError(err)
 

@@ -19,6 +19,7 @@ package generate
 
 import (
 	_ "embed"
+	"fmt"
 
 	"os"
 	"path/filepath"
@@ -68,7 +69,10 @@ func New() *cobra.Command {
 				return err
 			}
 
+			fmt.Printf("Files: %v\n", proj.Files)
+
 			_ = exechelper.Run("go mod init", opts...)
+			_ = exechelper.Run("go get cloud.google.com/go/compute/metadata", opts...)
 			if err = exechelper.Run("go mod tidy", opts...); err != nil {
 				return err
 			}
@@ -95,6 +99,8 @@ func New() *cobra.Command {
 				return errors.New("missed go with version " + proj.Go)
 			}
 
+			fmt.Println("CREATING DOCKERFILE")
+			fmt.Println("CREATING IMPORTS.GO")
 			proj.Files = append(proj.Files,
 				&project.File{
 					Path:     "Dockerfile",
@@ -105,6 +111,8 @@ func New() *cobra.Command {
 					Template: importsFileTemplate,
 				},
 			)
+
+			fmt.Printf("Files: %v\n", proj.Files)
 			return nil
 		},
 	}
@@ -120,8 +128,8 @@ func New() *cobra.Command {
 func addFlags(cmd *cobra.Command) {
 	cmd.Flags().StringP("path", "p", "", "path to the project")
 	cmd.Flags().StringP("name", "n", "app", "name of the generating app")
-	cmd.Flags().StringP("spire", "s", "1.2.2", "version of spire")
-	cmd.Flags().StringP("go", "g", "1.19", "version of go")
+	cmd.Flags().StringP("spire", "s", "1.8.7", "version of spire")
+	cmd.Flags().StringP("go", "g", "1.20.11", "version of go")
 
 	for _, child := range cmd.Commands() {
 		addFlags(child)

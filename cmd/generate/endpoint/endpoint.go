@@ -19,6 +19,7 @@ package endpoint
 
 import (
 	_ "embed"
+	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -42,6 +43,7 @@ func New(proj *project.Project) *cobra.Command {
 		Long:              `generates network service mesh endpoint. See more details https://networkservicemesh.io/docs/concepts/architecture/#endpoints`,
 
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			fmt.Println("CREATING DEPLOYMENT.YAML")
 			proj.Files = append(proj.Files, &project.File{
 				Path:     "deployment.yaml",
 				Template: deploymentFileTemplate,
@@ -52,6 +54,7 @@ func New(proj *project.Project) *cobra.Command {
 			var labels, _ = cmd.Flags().GetStringToString("labels")
 			var services, _ = cmd.Flags().GetStringArray("services")
 
+			fmt.Println("CREATING MAIN.GO")
 			proj.Files = append(proj.Files, &project.File{
 				Path:     "main.go",
 				Template: mainFileTemplate,
