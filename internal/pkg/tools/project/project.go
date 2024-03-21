@@ -43,6 +43,7 @@ func (p *Project) Save() error {
 	_ = os.MkdirAll(p.Path, os.ModePerm)
 
 	for _, file := range p.Files {
+		fmt.Printf("CREATING: %s\n", file.Path)
 		temp, err := template.New("").Parse(file.Template)
 		if err != nil {
 			return err

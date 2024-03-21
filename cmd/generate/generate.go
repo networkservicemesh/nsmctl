@@ -19,6 +19,7 @@ package generate
 
 import (
 	_ "embed"
+	"fmt"
 
 	"os"
 	"path/filepath"
@@ -68,6 +69,8 @@ func New() *cobra.Command {
 				return err
 			}
 
+			fmt.Printf("Files: %v\n", proj.Files)
+
 			_ = exechelper.Run("go mod init", opts...)
 			_ = exechelper.Run("go get cloud.google.com/go/compute/metadata", opts...)
 			if err = exechelper.Run("go mod tidy", opts...); err != nil {
@@ -96,6 +99,8 @@ func New() *cobra.Command {
 				return errors.New("missed go with version " + proj.Go)
 			}
 
+			fmt.Println("CREATING DOCKERFILE")
+			fmt.Println("CREATING IMPORTS.GO")
 			proj.Files = append(proj.Files,
 				&project.File{
 					Path:     "Dockerfile",
@@ -106,6 +111,8 @@ func New() *cobra.Command {
 					Template: importsFileTemplate,
 				},
 			)
+
+			fmt.Printf("Files: %v\n", proj.Files)
 			return nil
 		},
 	}
